@@ -671,66 +671,66 @@ Start-Job -Name "Remove Windows Bloatware" -ScriptBlock {
     #  Description:
     #This script will remove and disable OneDrive integration.
 
-    Import-Module -DisableNameChecking $PSScriptRoot\..\lib\Mkdir -Force .psm1
-    Import-Module -DisableNameChecking $PSScriptRoot\..\lib\take-own.psm1
+    #Import-Module -DisableNameChecking $PSScriptRoot\..\lib\Mkdir -Force .psm1
+    #Import-Module -DisableNameChecking $PSScriptRoot\..\lib\take-own.psm1
 
-    Write-Output "Kill OneDrive process"
-    Stop-Process -Force -Force -Name "OneDrive.exe"
-    Stop-Process -Force -Force -Name "explorer.exe"
+    #Write-Output "Kill OneDrive process"
+    #Stop-Process -Force -Force -Name "OneDrive.exe"
+    #Stop-Process -Force -Force -Name "explorer.exe"
 
-    Write-Output "Remove OneDrive"
-    if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
-        & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
-    }
-    if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
-        & "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
-    }
+    #Write-Output "Remove OneDrive"
+    #if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
+    #    & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
+    #}
+    #if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
+    #    & "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
+    #}
 
-    Write-Output "Removing OneDrive leftovers"
-    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
-    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
-    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:systemdrive\OneDriveTemp"
+    #Write-Output "Removing OneDrive leftovers"
+    #Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
+    #Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
+    #Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:systemdrive\OneDriveTemp"
     #check if directory is empty before removing:
-    If ((Get-ChildItem "$env:userprofile\OneDrive" -Recurse | Measure-Object).Count -eq 0) {
-        Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:userprofile\OneDrive"
-    }
+    #If ((Get-ChildItem "$env:userprofile\OneDrive" -Recurse | Measure-Object).Count -eq 0) {
+    #    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:userprofile\OneDrive"
+    #}
 
-    Write-Output "Disable OneDrive via Group Policies"
-    Mkdir -Force  "HKLM:\Software\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
-    Set-ItemProperty "HKLM:\Software\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
+    #Write-Output "Disable OneDrive via Group Policies"
+    #Mkdir -Force  "HKLM:\Software\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
+    #Set-ItemProperty "HKLM:\Software\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
 
-    Write-Output "Remove Onedrive from explorer sidebar"
-    New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
-    mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-    Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-    mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-    Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-    Remove-PSDrive "HKCR"
+    #Write-Output "Remove Onedrive from explorer sidebar"
+    #New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
+    #mkdir -Force "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+    #Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
+    #mkdir -Force "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+    #Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
+    #Remove-PSDrive "HKCR"
 
     #Thank you Matthew Israelsson
-    Write-Output "Removing run hook for new users"
-    reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
-    reg delete "HKEY_USERS\Default\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
-    reg unload "hku\Default"
+    #Write-Output "Removing run hook for new users"
+    #reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
+    #reg delete "HKEY_USERS\Default\Software\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
+    #reg unload "hku\Default"
 
-    Write-Output "Removing startmenu entry"
-    Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
+    #Write-Output "Removing startmenu entry"
+    #Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
 
-    Write-Output "Removing scheduled task"
-    Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive*' -ea SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
+    #Write-Output "Removing scheduled task"
+    #Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive*' -ea SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
 
-    Write-Output "Restarting explorer"
-    Start-Process "explorer.exe"
+    #Write-Output "Restarting explorer"
+    #Start-Process "explorer.exe"
 
-    Write-Output "Waiting for explorer to complete loading"
-    Start-Sleep 10
+    #Write-Output "Waiting for explorer to complete loading"
+    #Start-Sleep 10
 
-    Write-Output "Removing additional OneDrive leftovers"
-    foreach ($item in (Get-ChildItem "$env:WinDir\WinSxS\*onedrive*")) {
-        Takeown-Folder $item.FullName
-        Remove-Item -Recurse -Force $item.FullName
-    }
-}
+    #Write-Output "Removing additional OneDrive leftovers"
+    #foreach ($item in (Get-ChildItem "$env:WinDir\WinSxS\*onedrive*")) {
+    #    Takeown-Folder $item.FullName
+    #    Remove-Item -Recurse -Force $item.FullName
+    #}
+#}
 
 Start-Job -Name "Disable Telemetry and Services" -ScriptBlock {
     #Disabling Telemetry and Services
@@ -784,7 +784,7 @@ Start-Job -Name "Disable Telemetry and Services" -ScriptBlock {
     Set-Service  "Razer Game Scanner Service" -StartupType Disabled
 
     #Disable Windows Password Reveal Option
-    Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CredUI" -Name DisablePasswordReveal -Type "DWORD" -Value 1 -Force
+    #Set-ItemProperty -Path "HKLM:\Software\Policies\Microsoft\Windows\CredUI" -Name DisablePasswordReveal -Type "DWORD" -Value 1 -Force
 
     #Disable PowerShell 7+ Telemetry
     $POWERSHELL_Telemetry_OPTOUT = $true
@@ -879,8 +879,8 @@ Start-Job -Name "Disable Telemetry and Services" -ScriptBlock {
     Set-Service "wlidsvc" -StartupType Disabled
     Stop-Service "DoSvc"
     Set-Service "DoSvc" -StartupType Disabled
-    Stop-Service "OneSyncSvc"
-    Set-Service "OneSyncSvc" -StartupType Disabled
+    #Stop-Service "OneSyncSvc"
+    #Set-Service "OneSyncSvc" -StartupType Disabled
     Stop-Service "UnistoreSvc"
     Set-Service "UnistoreSvc" -StartupType Disabled
 }
